@@ -1,0 +1,41 @@
+model order {
+// pedido
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @db.Uuid
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  status    OrderStatus
+  user      User        @relation(fields: [userId], references: [id])
+
+  orderItems OrderItem[]
+
+  @@map("order")
+  @@schema("ecommerce")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+
+  @@map("order_status")
+  @@schema("ecommerce")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid()) @db.Uuid
+  orderId   String   @db.Uuid
+  productId String   @db.Uuid
+  quantity  Int
+  price     Decimal  @db.Decimal(15, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order   order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_item")
+  @@schema("ecommerce")
+}

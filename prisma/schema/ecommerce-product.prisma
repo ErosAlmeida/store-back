@@ -1,0 +1,16 @@
+model Product {
+  id          String      @id @default(uuid()) @db.Uuid
+  name        String      @db.VarChar(255)
+  description String?
+  image       String?     @db.VarChar(255)
+  price       Decimal     @db.Decimal(15, 2)
+  stock       Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  categories  Category[]
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+
+  @@map("product")
+  @@schema("ecommerce")
+}

@@ -1,0 +1,51 @@
+enum Role {
+  USER
+  ADMIN
+
+  @@schema("auth")
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  email     String    @unique
+  password  String
+  avatar    String?
+  role      Role      @default(USER)
+  cpf       String    @unique
+  active    Boolean   @default(true)
+  phone     String?
+  birthDate DateTime?
+  hiredAt   DateTime?
+
+  orders    order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userPermissions UserPermission[]
+
+  @@map("user") // nome da tabella
+  @@schema("auth")
+}
+
+model Permission {
+  id  String @id @default(uuid()) @db.Uuid
+  key String @unique
+
+  users UserPermission[]
+
+  @@map("permissions")
+  @@schema("auth")
+}
+
+model UserPermission {
+  userId       String @db.Uuid
+  permissionId String @db.Uuid
+
+  user       User       @relation(fields: [userId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([userId, permissionId])
+  @@map("user_permissions")
+  @@schema("auth")
+}

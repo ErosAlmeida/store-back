@@ -1,0 +1,34 @@
+enum CartStatus {
+  ACTIVE
+  CONVERTED
+  ABANDONED
+  EXPIRED
+
+  @@map("cart_status")
+  @@schema("ecommerce")
+}
+
+model Cart {
+  id        String     @id @default(uuid()) @db.Uuid
+  userId    String     @db.Uuid
+  status    CartStatus
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  items CartItem[]
+
+  @@map("cart")
+  @@schema("ecommerce")
+}
+
+model CartItem {
+  cartId    String  @db.Uuid
+  productId String  @db.Uuid
+  quantity  Int
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@id([cartId, productId])
+  @@map("cart_item")
+  @@schema("ecommerce")
+}
